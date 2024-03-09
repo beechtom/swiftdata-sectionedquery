@@ -41,9 +41,8 @@ where SectionIdentifier: Hashable, Result: PersistentModel {
 
     /// Conform to equatable
     public static func == (lhs: SectionedResults<SectionIdentifier, Result>, rhs: SectionedResults<SectionIdentifier, Result>) -> Bool {
-        if lhs.sections.count < 1 || rhs.sections.count < 1 || lhs.sections.count != rhs.sections.count {
-            return false
-        }
+        if lhs.sections.count != rhs.sections.count { return false }
+        else if lhs.sections.count < 1 && rhs.sections.count < 1 { return true }
         else {
             for range in 0...lhs.sections.count-1 {
                 
