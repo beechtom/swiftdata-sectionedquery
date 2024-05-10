@@ -10,9 +10,9 @@ import SwiftUI
 /// A collection of models retrieved from a SwiftData persistent store, grouped into sections.
 ///
 @available(iOS 17, macOS 14, tvOS 17, watchOS 10, visionOS 1, *)
-public struct SectionedResults<SectionIdentifier, Result>: RandomAccessCollection
+public struct SectionedResults<SectionIdentifier, Result>: Equatable, RandomAccessCollection
 where SectionIdentifier: Hashable, Result: PersistentModel {
-
+    
     /// A type that represents an element in the collection.
     public typealias Element     = SectionedResults<SectionIdentifier, Result>.Section
     /// A type that represents a position in the collection.
@@ -39,6 +39,20 @@ where SectionIdentifier: Hashable, Result: PersistentModel {
         get { sections[position] }
     }
 
+    /// Conform to equatable
+    public static func == (lhs: SectionedResults<SectionIdentifier, Result>, rhs: SectionedResults<SectionIdentifier, Result>) -> Bool {
+        if lhs.sections.count != rhs.sections.count { return false }
+        else if lhs.sections.count < 1 && rhs.sections.count < 1 { return true }
+        else {
+            for range in 0...lhs.sections.count-1 {
+                
+                if lhs.sections[range].elements.count != rhs.sections[range].elements.count {
+                    return false
+                }
+            }
+            return true
+        }
+    }
 
     internal init(sectionIdentifier: KeyPath<Result, SectionIdentifier>, results: [Result]) {
         self.sectionIdentifier = sectionIdentifier
