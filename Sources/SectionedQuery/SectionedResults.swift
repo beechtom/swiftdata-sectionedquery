@@ -54,6 +54,7 @@ where SectionIdentifier: Hashable, Result: PersistentModel {
         }
     }
 
+
     internal init(sectionIdentifier: KeyPath<Result, SectionIdentifier>, results: [Result]) {
         self.sectionIdentifier = sectionIdentifier
         
@@ -69,6 +70,13 @@ where SectionIdentifier: Hashable, Result: PersistentModel {
             guard let elements = groupedResults[identifier] else { return nil }
             return Section(id: identifier, elements: elements)
         }
+    }
+    
+    
+    public func filter(_ isIncluded: (Result) throws -> Bool) rethrows -> Self {
+        let elements         = sections.flatMap { $0.elements }
+        let filteredElements = try elements.filter(isIncluded)
+        return .init(sectionIdentifier: sectionIdentifier, results: filteredElements)
     }
 
 
